@@ -55,21 +55,69 @@ songs = [
 ]
 
 
-playlist = LinkedList()
+def build_playlist() -> LinkedList:
+    playlist = LinkedList()
 
-for i, song in enumerate(songs):
-    node = Node(i + 1)
-    node.metadata['song_name'] = song['song_name']
-    node.metadata['artist'] = song['artist']
-    node.metadata['album'] = song['album']
-    playlist.insert_at_end(node)
+    for i, song in enumerate(songs):
+        node = Node(i + 1)
+        node.metadata['song_name'] = song['song_name']
+        node.metadata['artist'] = song['artist']
+        node.metadata['album'] = song['album']
+        playlist.insert_at_end(node)
+
+    return playlist
 
 
-print(f'Total de canciones: {len(playlist)}\n')
+def print_now_playing(node: Node, total: int) -> None:
+    print()
+    print('=' * 45)
+    print(f'  ♪  Reproduciendo [{node.data}/{total}]')
+    print('=' * 45)
+    print(f'  Canción : {node.metadata["song_name"]}')
+    print(f'  Artista : {node.metadata["artist"]}')
+    print(f'  Álbum   : {node.metadata["album"]}')
+    print('=' * 45)
 
-for node in playlist:
-    print(
-        f'{node.data:>2}. {node.metadata["song_name"]:<30}'
-        f'  {node.metadata["artist"]:<25}'
-        f'  {node.metadata["album"]}'
-    )
+
+def print_menu(has_prev: bool, has_next: bool) -> None:
+    print()
+    if has_prev:
+        print('  [P] Canción anterior')
+    if has_next:
+        print('  [N] Siguiente canción')
+    print('  [Q] Salir')
+    print()
+
+
+def run() -> None:
+    playlist = build_playlist()
+    total = len(playlist)
+    current = playlist.start
+
+    print_now_playing(current, total)
+
+    while True:
+        has_prev = current.prev is not None
+        has_next = current.next is not None
+
+        print_menu(has_prev, has_next)
+
+        option = input('  Opción: ').strip().upper()
+
+        if option == 'N' and has_next:
+            current = current.next
+            print_now_playing(current, total)
+
+        elif option == 'P' and has_prev:
+            current = current.prev
+            print_now_playing(current, total)
+
+        elif option == 'Q':
+            print('\n  Cerrando playlist. Hasta luego.\n')
+            break
+
+        else:
+            print('\n  Opción no válida.')
+
+
+run()
