@@ -70,22 +70,22 @@ def build_playlist() -> LinkedList:
 
 def print_now_playing(node: Node, total: int) -> None:
     print()
-    print('=' * 45)
+    print('-' * 45)
     print(f'  ♪  Reproduciendo [{node.data}/{total}]')
-    print('=' * 45)
+    print('-' * 45)
     print(f'  Canción : {node.metadata["song_name"]}')
     print(f'  Artista : {node.metadata["artist"]}')
     print(f'  Álbum   : {node.metadata["album"]}')
-    print('=' * 45)
+    print('-' * 45)
 
 
 def print_menu(has_prev: bool, has_next: bool) -> None:
     print()
     if has_prev:
-        print('  [P] Canción anterior')
+        print('  [B] Canción anterior')
     if has_next:
         print('  [N] Siguiente canción')
-    print('  [Q] Salir')
+    print('  [SALIR] Salir')
     print()
 
 
@@ -108,11 +108,11 @@ def run() -> None:
             current = current.next
             print_now_playing(current, total)
 
-        elif option == 'P' and has_prev:
+        elif option == 'B' and has_prev:
             current = current.prev
             print_now_playing(current, total)
 
-        elif option == 'Q':
+        elif option == 'SALIR':
             print('\n  Cerrando playlist. Hasta luego.\n')
             break
 
