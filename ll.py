@@ -2,13 +2,21 @@ class Node:
     def __init__(self, data: any):
         self.data = data
         self.next = None
+        self.prev = None
+        self.metadata = {
+            'song_name': None,
+            'artist': None,
+            'album': None,
+        }
 
     def __repr__(self):
-        return f'| DATA: {self.data} | NEXT: {self.next} |'
-    
+        return f'| PREV: {self.prev} | DATA: {self.data} | NEXT: {self.next} |'
+
+
 class LinkedList:
     def __init__(self):
         self.start = None
+        self.end = None
 
     def __repr__(self) -> str:
         nodes = ['START']
@@ -35,52 +43,61 @@ class LinkedList:
 
         return length
 
-    def traverse(self) -> None:
-        for node in self:
-            print(node)
- 
     def insert_at_beginning(self, element: Node) -> None:
+        if self.start is None:
+            self.start = element
+            self.end = element
+            return
+
         element.next = self.start
+        self.start.prev = element
         self.start = element
- 
+
     def insert_at_end(self, element: Node) -> None:
         if self.start is None:
             self.start = element
+            self.end = element
             return
- 
-        last_node = self.start
- 
-        for node in self:
-            last_node = node
- 
-        last_node.next = element
- 
+
+        element.prev = self.end
+        self.end.next = element
+        self.end = element
+
     def insert_after_node(self, element: Node, node_reference: any) -> None:
         for node in self:
             if node.data == node_reference:
                 element.next = node.next
+                element.prev = node
+
+                if node.next is not None:
+                    node.next.prev = element
+                else:
+                    self.end = element
+
                 node.next = element
                 return
- 
+
     def delete_node(self, element_data: any) -> None:
         if self.start is None:
             return
- 
-        if self.start.data == element_data:
-            self.start = self.start.next
-            return
- 
-        previous = self.start
- 
+
         for node in self:
             if node.data == element_data:
-                previous.next = node.next
+                if node.prev is not None:
+                    node.prev.next = node.next
+                else:
+                    self.start = node.next
+
+                if node.next is not None:
+                    node.next.prev = node.prev
+                else:
+                    self.end = node.prev
+
                 return
-            previous = node
- 
+
     def search(self, element_data: any) -> Node | None:
         for node in self:
             if node.data == element_data:
                 return node
- 
+
         return None
